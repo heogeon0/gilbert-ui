@@ -13,21 +13,44 @@ const meta = {
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ['autodocs'],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
-  argTypes: {},
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
 } satisfies Meta<typeof Accordion>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Primary: Story = {
+export const Basic: Story = {
   args: {
     items: data,
     titleRenderer: (toggleItem, title) => (
-      <button onClick={toggleItem} type="button">
+      <div
+        style={{
+          background: 'none',
+          display: 'flex',
+          border: 'none',
+          backgroundColor: 'lightblue',
+          cursor: 'pointer',
+          fontSize: '16px',
+          padding: '8px',
+        }}
+        onClick={toggleItem}
+      >
         {title}
-      </button>
+      </div>
     ),
-    descriptionRenderer: (description) => <div>{description}</div>,
+    descriptionRenderer: (description) => (
+      <div
+        style={{
+          background: 'none',
+          display: 'flex',
+          border: 'none',
+          backgroundColor: 'ghostwhite',
+          fontSize: '14px',
+          padding: '8px',
+        }}
+      >
+        {description}
+      </div>
+    ),
   },
 }
