@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>
 export const Basic: Story = {
   args: {
     items: data,
-    titleRenderer: (toggleItem, title) => (
+    titleRenderer: ({ toggleItem, item }) => (
       <div
         style={{
           background: 'none',
@@ -36,7 +36,7 @@ export const Basic: Story = {
         }}
         onClick={toggleItem}
       >
-        {title}
+        {item.title}
       </div>
     ),
     descriptionRenderer: (description) => (
