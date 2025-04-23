@@ -14,8 +14,8 @@ type Style = Partial<Record<'left' | 'right' | 'top' | 'bottom', number>>
  * @returns style - 렌더링될 요소의 위치
  * */
 const useStyleInView = (
-  wrapperRef: RefObject<HTMLElement>,
-  targetRef: RefObject<HTMLElement>,
+  wrapperRef: RefObject<HTMLElement | null>,
+  targetRef: RefObject<HTMLElement | null>,
   position: Positions
 ) => {
   const viewportRect = useViewportRect()
