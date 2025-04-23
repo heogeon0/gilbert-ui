@@ -1,4 +1,4 @@
-import { createContext, useSyncExternalStore } from 'react'
+import { createContext, useContext, useSyncExternalStore } from 'react'
 
 type Rect = Pick<DOMRect, 'left' | 'top' | 'width' | 'height'> & {
   scrollHeight: number
@@ -54,7 +54,7 @@ const subscribe = (callback: () => void) => {
 
 const ViewportContext = createContext<Rect>(DefaultRect)
 
-const ViewportContextProvider = ({
+export const ViewportContextProvider = ({
   children,
 }: {
   children: React.ReactNode
@@ -68,4 +68,8 @@ const ViewportContextProvider = ({
   )
 }
 
-export default ViewportContextProvider
+const useViewportRect = () => {
+  return useContext(ViewportContext)
+}
+
+export default useViewportRect
