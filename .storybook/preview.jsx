@@ -3,7 +3,7 @@ import React from 'react'
 
 import { ViewportContextProvider } from '../src/hooks/useViewportRect'
 
-const WithProviders = (Story) => {
+const withProviders = (Story) => {
   return (
     <ViewportContextProvider>
       <Story />
@@ -12,6 +12,7 @@ const WithProviders = (Story) => {
 }
 
 const preview = {
+  decorators: [withProviders],
   parameters: {
     controls: {
       matchers: {

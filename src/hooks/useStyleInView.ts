@@ -21,6 +21,8 @@ const useStyleInView = (
   const viewportRect = useViewportRect()
   const [style, setStyle] = useState<Style>()
 
+  console.log('vuiew', viewportRect)
+
   useLayoutEffect(() => {
     if (!wrapperRef.current || !targetRef.current) return
 

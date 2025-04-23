@@ -14,6 +14,8 @@ const Tooltip = ({ children, tooltip }: Props) => {
   const wrapperRef = useRef(null)
   const targetRef = useRef(null)
   const style = useStyleInView(wrapperRef, targetRef, position)
+
+  console.log('style', style)
   return (
     <details>
       <summary data-tooltip-sumary ref={wrapperRef}>

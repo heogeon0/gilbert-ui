@@ -36,6 +36,7 @@ const getViewportRect = () => {
       height,
       scrollHeight: elem.scrollHeight,
     }
+
     if (newRect && !isSameRect(stored, newRect)) stored = newRect
     return stored
   }
