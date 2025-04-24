@@ -1,10 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
+import SingleOpenContextProvider from '@/context/singleOpenContext.tsx'
 import Tooltip from '@/headless-ui/tooltip'
 
 const meta = {
   title: 'Headless-ui/Tooltip',
   component: Tooltip,
+  decorators: [
+    (Story) => (
+      <SingleOpenContextProvider>
+        <div style={{ height: '30vh', paddingTop: '30vh' }}>
+          <Story />
+        </div>
+      </SingleOpenContextProvider>
+    ),
+  ],
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: 'centered',
@@ -20,6 +30,7 @@ type Story = StoryObj<typeof meta>
 
 export const Basic: Story = {
   args: {
+    id: 'tooltip',
     children: <div>애호</div>,
     tooltip: <div>메롱</div>,
   },

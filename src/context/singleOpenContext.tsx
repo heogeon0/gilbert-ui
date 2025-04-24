@@ -13,7 +13,6 @@ const SingleOpenContext = createContext<
 
 const SingleOpenContextProvider = ({ children }: { children: ReactNode }) => {
   const state = useState<string | null>(null)
-
   return (
     <SingleOpenContext.Provider value={state}>
       {children}
