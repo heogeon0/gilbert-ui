@@ -35,9 +35,6 @@ const useStyleInView = (
     const wrapperRect = wrapperRef.current.getBoundingClientRect()
     const targetRect = targetElement.getBoundingClientRect()
 
-    console.log('wrapperRect', wrapperRect)
-    console.log('targetRect', targetRect)
-
     // verticalKey의 의미는 top인 경우 렌더링 할 요소(tagetRef)의 top 위치를 결정한다는 의미임
     const verticalKey =
       wrapperRect.bottom + targetRect.height < viewportRect.height

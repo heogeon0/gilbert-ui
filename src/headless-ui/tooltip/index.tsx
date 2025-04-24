@@ -44,7 +44,7 @@ const Tooltip = ({ children, tooltip, id }: Props) => {
   }, [isOpen, toggle])
 
   return (
-    <div ref={observeRef}>
+    <div style={{ position: 'relative' }} ref={observeRef}>
       <div ref={wrapperRef} onClick={handleClick}>
         {children}
       </div>

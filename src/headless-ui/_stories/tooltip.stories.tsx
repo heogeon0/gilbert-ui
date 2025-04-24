@@ -9,7 +9,7 @@ const meta = {
   decorators: [
     (Story) => (
       <SingleOpenContextProvider>
-        <div style={{ height: '30vh', paddingTop: '30vh' }}>
+        <div style={{ height: '30vh' }}>
           <Story />
         </div>
       </SingleOpenContextProvider>
@@ -32,6 +32,16 @@ export const Basic: Story = {
   args: {
     id: 'tooltip',
     children: <div>애호</div>,
-    tooltip: <div style={{ padding: '20px 10px', width: '400px' }}>메롱</div>,
+    tooltip: (
+      <div
+        style={{
+          padding: '20px 10px',
+          width: '400px',
+          boxSizing: 'border-box',
+        }}
+      >
+        메롱
+      </div>
+    ),
   },
 }
