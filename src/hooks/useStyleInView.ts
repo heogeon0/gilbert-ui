@@ -21,8 +21,6 @@ const useStyleInView = (
   const viewportRect = useViewportRect()
   const [style, setStyle] = useState<Style>()
 
-  console.log('vuiew', viewportRect)
-
   useLayoutEffect(() => {
     if (!wrapperRef.current || !targetRef.current) return
 
@@ -38,6 +36,8 @@ const useStyleInView = (
       wrapperRect.right + targetRect.width < viewportRect.width
         ? 'left'
         : 'right'
+
+    console.log('ver', verticalKey)
 
     setStyle({
       [verticalKey]: position[verticalKey] || 0,

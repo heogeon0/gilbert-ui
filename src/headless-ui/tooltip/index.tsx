@@ -8,20 +8,35 @@ type Props = {
   tooltip: React.ReactNode
 }
 
-const position = {}
+const position = {
+  top: '100%',
+  bottom: 20,
+  left: 0,
+  right: 0,
+}
 
 const Tooltip = ({ children, tooltip }: Props) => {
   const wrapperRef = useRef(null)
   const targetRef = useRef(null)
   const style = useStyleInView(wrapperRef, targetRef, position)
 
-  console.log('style', style)
   return (
     <details>
       <summary data-tooltip-sumary ref={wrapperRef}>
         {children}
       </summary>
-      <div ref={targetRef} style={style}>
+      <div
+        ref={targetRef}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          ...style,
+          position: 'absolute',
+          backgroundColor: 'black',
+          color: 'white',
+          padding: '5px',
+          borderRadius: '3px',
+        }}
+      >
         {tooltip}
       </div>
     </details>
