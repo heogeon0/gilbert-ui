@@ -20,9 +20,9 @@ const position = {
 }
 
 const Tooltip = ({ children, tooltip, id }: Props) => {
+  const observeRef = useRef(null)
   const wrapperRef = useRef(null)
-  const targetRef = useRef(null)
-  const style = useStyleInView(wrapperRef, targetRef, position)
+  const style = useStyleInView(wrapperRef, observeRef, id, position)
   const [isOpen, toggle] = useSingleOpen(id)
 
   /** 특정 요소를 클릭했을 때 툴팁을 열거나 닫는 함수 */
@@ -44,13 +44,13 @@ const Tooltip = ({ children, tooltip, id }: Props) => {
   }, [isOpen, toggle])
 
   return (
-    <>
+    <div ref={observeRef}>
       <div ref={wrapperRef} onClick={handleClick}>
         {children}
       </div>
       {isOpen && (
         <div
-          ref={targetRef}
+          data-target-id={id}
           onClick={(e) => e.stopPropagation()}
           style={{
             ...style,
@@ -60,7 +60,7 @@ const Tooltip = ({ children, tooltip, id }: Props) => {
           {tooltip}
         </div>
       )}
-    </>
+    </div>
   )
 }
 

@@ -32,6 +32,6 @@ export const Basic: Story = {
   args: {
     id: 'tooltip',
     children: <div>애호</div>,
-    tooltip: <div>메롱</div>,
+    tooltip: <div style={{ padding: '20px 10px', width: '400px' }}>메롱</div>,
   },
 }
