@@ -10,6 +10,8 @@ type Props = {
   children: React.ReactNode
   /** 툴팁 영역 */
   tooltip: React.ReactNode
+  /** 호버로 열릴지 여부 (기본값은 false이며, 클릭했을 시 열림) */
+  openByHover?: boolean
 }
 
 const position = {
@@ -19,7 +21,7 @@ const position = {
   right: 0,
 }
 
-const Tooltip = ({ children, tooltip, id }: Props) => {
+const Tooltip = ({ children, tooltip, id, openByHover }: Props) => {
   const observeRef = useRef(null)
   const wrapperRef = useRef(null)
   const style = useStyleInView(wrapperRef, observeRef, id, position)
@@ -27,13 +29,34 @@ const Tooltip = ({ children, tooltip, id }: Props) => {
 
   /** 특정 요소를 클릭했을 때 툴팁을 열거나 닫는 함수 */
   const handleClick = (e: SyntheticEvent) => {
+    if (openByHover) return
+    console.log('여기가실행되나?')
     e.stopPropagation()
     toggle((prev) => (prev === id ? null : id))
   }
 
+  /** 마우스 오버시 툴팁을 열도록 설정 */
+  const handleMouseOver = (e: SyntheticEvent) => {
+    if (openByHover) {
+      e.stopPropagation()
+      toggle(id)
+    }
+  }
+
+  /** 마우스 아웃시 툴팁을 닫도록 설정 */
+  const handleMouseOut = (e: SyntheticEvent) => {
+    if (openByHover) {
+      e.stopPropagation()
+      toggle(null)
+    }
+  }
+
   /** 툴팁이 열려있는 경우, 툴팁 외부를 클릭했을 때, 툴팁이 닫히도록 이벤트 추가 */
   useEffect(() => {
-    const close = () => toggle(null)
+    const close = () => {
+      if (openByHover) return
+      toggle(null)
+    }
     if (isOpen) {
       window.addEventListener('click', close, { once: true })
     }
@@ -41,10 +64,15 @@ const Tooltip = ({ children, tooltip, id }: Props) => {
     return () => {
       window.removeEventListener('click', close)
     }
-  }, [isOpen, toggle])
+  }, [isOpen, toggle, openByHover])
 
   return (
-    <div style={{ position: 'relative' }} ref={observeRef}>
+    <div
+      style={{ position: 'relative' }}
+      ref={observeRef}
+      onMouseOut={handleMouseOut}
+      onMouseOver={handleMouseOver}
+    >
       <div ref={wrapperRef} onClick={handleClick}>
         {children}
       </div>

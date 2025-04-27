@@ -31,7 +31,26 @@ type Story = StoryObj<typeof meta>
 export const Basic: Story = {
   args: {
     id: 'tooltip',
-    children: <div>애호</div>,
+    children: <div>안녕 난 버튼이야!</div>,
+    tooltip: (
+      <div
+        style={{
+          padding: '20px 10px',
+          width: '400px',
+          boxSizing: 'border-box',
+        }}
+      >
+        메롱
+      </div>
+    ),
+  },
+}
+
+export const OpenByHover: Story = {
+  args: {
+    openByHover: true,
+    id: 'tooltip',
+    children: <div>안녕 난 버튼이야!</div>,
     tooltip: (
       <div
         style={{
