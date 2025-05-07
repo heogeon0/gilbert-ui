@@ -30,7 +30,6 @@ const Tooltip = ({ children, tooltip, id, openByHover }: Props) => {
   /** 특정 요소를 클릭했을 때 툴팁을 열거나 닫는 함수 */
   const handleClick = (e: SyntheticEvent) => {
     if (openByHover) return
-    console.log('여기가실행되나?')
     e.stopPropagation()
     toggle((prev) => (prev === id ? null : id))
   }
