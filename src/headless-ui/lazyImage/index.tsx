@@ -17,6 +17,12 @@ type Props = {
   loadingComponent?: React.ReactNode
 }
 
+/**
+ * LazyImage 컴포넌트
+ * @description
+ * - IntersectionObserver를 사용하여 화면에 보일때 이미지를 로드합니다.
+ * - 로딩 시 보여줄 컴포넌트를 props로 전달할 수 있습니다.
+ * */
 const LazyImage = ({ width, height, src, loadingComponent }: Props) => {
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [loaded, setLoaded] = useState(false)
@@ -43,8 +49,6 @@ const LazyImage = ({ width, height, src, loadingComponent }: Props) => {
       imgElement.removeEventListener('load', onLoad)
     }
   }, [src, entries, observerRef])
-
-  console.log('loaded', loaded)
 
   return (
     <div
