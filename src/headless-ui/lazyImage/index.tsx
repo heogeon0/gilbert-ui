@@ -54,21 +54,30 @@ const LazyImage = ({ width, height, src, loadingComponent }: Props) => {
         height: `${height}px`,
       }}
     >
-      <img ref={imgRef} width={width} height={height} alt="" />
-      {!loaded && (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            zIndex: 1,
-            top: 0,
-            left: 0,
-          }}
-        >
-          {loadingComponent}
-        </div>
-      )}
+      <img
+        style={{
+          transition: 'opacity 0.5s ease-in-out',
+          opacity: loaded ? 1 : 0,
+        }}
+        ref={imgRef}
+        width={width}
+        height={height}
+        alt=""
+      />
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+          transition: 'opacity 0.5s ease-in-out',
+          opacity: loaded ? 0 : 1,
+          zIndex: 1,
+          top: 0,
+          left: 0,
+        }}
+      >
+        {loadingComponent}
+      </div>
     </div>
   )
 }
