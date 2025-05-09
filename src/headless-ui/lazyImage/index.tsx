@@ -13,10 +13,12 @@ type Props = {
   width: number
   /** 이미지 height */
   height: number
+  /** 로딩 시 보여줄 컴포넌트 */
+  loadingComponent?: React.ReactNode
 }
 
-const LazyImage = ({ width, height, src }: Props) => {
-  const imgRef = useRef<HTMLElement>(null)
+const LazyImage = ({ width, height, src, loadingComponent }: Props) => {
+  const imgRef = useRef<HTMLImageElement | null>(null)
   const [loaded, setLoaded] = useState(false)
 
   const { entries, observerRef } = useIntersectionObserver(imgRef, ioOptions)
@@ -29,13 +31,7 @@ const LazyImage = ({ width, height, src }: Props) => {
     const imgElement = imgRef.current
     if (!imgElement) return
 
-    if ('loading' in HTMLImageElement.prototype) {
-      imgElement.setAttribute('src', src)
-      imgElement.setAttribute('loading', 'lazy')
-      observerRef.current?.disconnect()
-      return
-    }
-
+    /** 화면에 돔이 탐지되었을때, src를 입력하여 데이터 입력 */
     const isVisible = entries[0]?.isIntersecting
     if (isVisible) {
       imgElement.addEventListener('load', onLoad, { once: true })
@@ -48,8 +44,33 @@ const LazyImage = ({ width, height, src }: Props) => {
     }
   }, [src, entries, observerRef])
 
-  console.log('check', width, height, loaded)
-  return <></>
+  console.log('loaded', loaded)
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        width: `${width}px`,
+        height: `${height}px`,
+      }}
+    >
+      <img ref={imgRef} width={width} height={height} alt="" />
+      {!loaded && (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            zIndex: 1,
+            top: 0,
+            left: 0,
+          }}
+        >
+          {loadingComponent}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default LazyImage
