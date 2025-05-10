@@ -12,6 +12,7 @@ const InfiniteScrollBasicComponent: React.FC<
 
   const [isLoading, setIsLoading] = useState(false)
   const handleUnderFetcher = async () => {
+    if (isLoading) return
     setIsLoading(true)
     const newItems = await generatePageData()
     setItems((prev) => [...prev, ...newItems])
