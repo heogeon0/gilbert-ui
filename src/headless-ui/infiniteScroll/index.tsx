@@ -1,3 +1,5 @@
+import React from 'react'
+
 import useInfiniteScroll from '@/headless-ui/infiniteScroll/useInfiniteScroll.ts'
 
 export type Props = {
@@ -9,46 +11,30 @@ export type Props = {
   loadingComponent?: React.ReactNode
   /** 아래 도달했을 때, feching 함수 */
   underFetcher?: () => void
-  /** 위 도달했을 때, feching 함수 */
-  upperFetcher?: () => void
   /** 아래로 스크롤 시 로딩 여부 */
   isUnderLoading?: boolean
-  /** 위로 스크롤 시 로딩 여부 */
-  isUpperLoading?: boolean
 }
 
 const InfiniteScroll = ({
   renderer,
   total,
   loadingComponent,
-  upperFetcher,
   underFetcher,
+  isUnderLoading,
 }: Props) => {
-  const { moreRefs } = useInfiniteScroll({ underFetcher, upperFetcher })
+  const { moreRef } = useInfiniteScroll(underFetcher)
+
   return (
     <div className={'infinite-scroll-wrapper'}>
-      <div
-        ref={(el) => {
-          moreRefs.current[0] = el
-        }}
-        id={'fetch-upper'}
-        className="uppperRef"
-      ></div>
       <ul className={'infinite-scroll-list'}>
         {Array.from({ length: total }, (_, index) => (
-          <li key={index}>{renderer(index)}</li>
+          <React.Fragment key={index}>{renderer(index)}</React.Fragment>
         ))}
       </ul>
-      {loadingComponent && (
+      {loadingComponent && isUnderLoading && (
         <div className={'infinite-scroll-loading'}>{loadingComponent}</div>
       )}
-      <div
-        ref={(el) => {
-          moreRefs.current[1] = el
-        }}
-        id={'fetch-under'}
-        className="underRef"
-      ></div>
+      <div ref={moreRef} id={'fetch-under'} className="underRef"></div>
     </div>
   )
 }
