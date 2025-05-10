@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 
-type Elem = Element | null
+export type Elem = Element | null
 
 const DefaultOption: IntersectionObserverInit = { threshold: 0 }
 
