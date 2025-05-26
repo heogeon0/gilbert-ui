@@ -12,6 +12,12 @@
     overflow-x: auto;
     padding-left: 8px;
     padding-right: 8px;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .buttonWrapper {
