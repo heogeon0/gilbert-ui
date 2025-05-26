@@ -21,10 +21,16 @@
     height: auto;
     width: auto;
     background-color: rgba(0, 0, 0, 0.4);
+    display: none;
 
     &.prev {
       left: 0;
       right: auto;
+    }
+
+    &.next {
+      right: 0;
+      left: auto;
     }
 
     &.on {
