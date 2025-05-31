@@ -1,5 +1,6 @@
 import React, {
   ForwardedRef,
+  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -21,10 +22,12 @@ type CustomButtonProps = {
 }
 
 type Direction = 'prev' | 'next'
+export type ScrollBoxRef = {
+  scrollFocus: (index: number, behavior: ScrollBehavior) => void
+}
 export type ScrollBoxProps<T> = {
   itemCount: number
   onItemClick?: OnItemClick<T>
-  ref: React.RefObject<HTMLElement> | null
   customButtonProps: CustomButtonProps
   wrapperClassName?: string
   renderer: (index: number, onClick: OnItemClick<T>) => React.ReactNode
@@ -60,16 +63,17 @@ const getVisibileEdgeItems = (
   return { left, right }
 }
 
-const ScrollBox = <T extends { id: string }>(
-  {
+const ScrollBoxComponent = <T extends { id: string }>(
+  props: ScrollBoxProps<T>,
+  ref: ForwardedRef<unknown>
+) => {
+  const {
     wrapperClassName = '',
     renderer,
     itemCount,
     onItemClick,
     customButtonProps,
-  }: ScrollBoxProps<T>,
-  ref: ForwardedRef<unknown>
-) => {
+  } = props
   const [buttonEnabled, setButtonEnabled] = useState(DefaultButtonState)
   const watcherRef = useRef<[Elem, Elem]>([null, null])
 
@@ -99,10 +103,8 @@ const ScrollBox = <T extends { id: string }>(
    * @param direction 이동 방향
    */
   const move = useCallback((direction: Direction) => {
-    console.log(listRef.current)
     if (!listRef.current || !itemsRef.current.length) return
 
-    console.log(itemsRef.current)
     const { left, right } = getVisibileEdgeItems(
       listRef.current,
       itemsRef.current
@@ -184,11 +186,11 @@ const ScrollBox = <T extends { id: string }>(
         }}
         className={cx('buttonWrapper', 'prev', { on: buttonEnabled.prev })}
       >
-        {isUseButton && customButtonProps.leftCustomButton ? (
-          customButtonProps.leftCustomButton
-        ) : (
-          <button className={cx('navigationButton', 'prev')}></button>
-        )}
+        {isUseButton
+          ? customButtonProps.leftCustomButton || (
+              <button className={cx('navigationButton', 'prev')}></button>
+            )
+          : null}
       </div>
       <div
         onClick={() => {
@@ -196,14 +198,16 @@ const ScrollBox = <T extends { id: string }>(
         }}
         className={cx('buttonWrapper', 'next', { on: buttonEnabled.next })}
       >
-        {isUseButton && customButtonProps.rightCustomButton ? (
-          customButtonProps.rightCustomButton
-        ) : (
-          <button className={cx('navigationButton', 'next')}></button>
-        )}
+        {isUseButton
+          ? customButtonProps.rightCustomButton || (
+              <button className={cx('navigationButton', 'next')}></button>
+            )
+          : null}
       </div>
     </div>
   )
 }
 
-export default ScrollBox
+export default forwardRef(ScrollBoxComponent) as <T extends { id: string }>(
+  props: ScrollBoxProps<T> & { ref?: ForwardedRef<ScrollBoxRef> }
+) => React.ReactElement
