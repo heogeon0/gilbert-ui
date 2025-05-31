@@ -1,0 +1,106 @@
+.scrollBox {
+  position: relative;
+
+  .scrollBoxList {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+    overflow-x: auto;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .buttonWrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: auto;
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+    z-index: 10;
+    cursor: pointer;
+
+    &.on {
+      display: block;
+      opacity: 0.4;
+      transition: opacity ease-out 0.2s;
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    &.prev {
+      left: 0;
+    }
+    &.next {
+      right: 0;
+    }
+
+    .navigationButton {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 0;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 12px;
+        background-color: #fff;
+      }
+      &::before {
+        top: calc(50% - 10px);
+      }
+      &::after {
+        top: calc(50% + 2px);
+      }
+
+      &.prev {
+        left: 0;
+        &::before {
+          left: 13px;
+          transform-origin: 0 100%;
+          rotate: 30deg;
+        }
+        &::after {
+          left: 13px;
+          transform-origin: 0 0;
+          rotate: -30deg;
+        }
+      }
+      &.next {
+        right: 0;
+        &::before {
+          right: 13px;
+          top: calc(50% - 10px);
+          transform-origin: 100% 100%;
+          rotate: -30deg;
+        }
+        &::after {
+          right: 13px;
+          top: calc(50% + 2px);
+          transform-origin: 100% 0;
+          rotate: 30deg;
+        }
+      }
+    }
+  }
+}

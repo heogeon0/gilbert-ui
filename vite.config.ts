@@ -4,12 +4,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    vanillaExtractPlugin({
-      identifiers: ({ hash }) => `gilbert-ui_${hash}}`,
-    }),
-  ],
+  plugins: [react(), vanillaExtractPlugin()],
   resolve: {
     alias: [
       { find: '@components', replacement: '/src/components' },
