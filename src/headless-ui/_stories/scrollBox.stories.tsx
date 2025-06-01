@@ -1,15 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { ComponentType } from 'react'
 
 import LazyImage from '../lazyImage'
 
-import ScrollBox, { ScrollBoxProps } from '@/headless-ui/scrollBox'
+import ScrollBox from '@/headless-ui/scrollBox'
 
 const meta = {
   title: 'Headless-ui/ScrollBox',
-  component: ScrollBox as unknown as ComponentType<
-    ScrollBoxProps<{ id: string }>
-  >,
+  component: ScrollBox,
   decorators: [
     (Story) => (
       <div style={{ height: '30vh', width: '100%', overflow: 'hidden' }}>
@@ -36,7 +33,7 @@ export const Basic: Story = {
       useButton: true,
     },
     ref: null,
-    renderer: (index) => (
+    renderer: (index: number) => (
       <LazyImage
         width={50}
         height={100}
