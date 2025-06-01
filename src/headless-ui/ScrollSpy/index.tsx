@@ -11,6 +11,10 @@ import { ScrollBoxRef } from '../scrollBox'
 
 import useIntersectionObserver, { Elem } from '@/hooks/useIntersectionObserver'
 
+const IntersectionObserverOptions = {
+  threshold: [0.2],
+}
+
 interface ScrollSpyProps {
   /**
    * IDs of the sections to spy on
@@ -47,7 +51,6 @@ interface ScrollSpyProps {
 
 export const ScrollSpy = ({
   ids,
-  offset = 0,
   navigation,
   renderer,
   wrapperComponent: WrapperComponent,
@@ -58,28 +61,19 @@ export const ScrollSpy = ({
   const scrollBoxRef = useRef<ScrollBoxRef>(null)
 
   const { entries } = useIntersectionObserver(
-    { current: sectionsRef.current.filter(Boolean) },
-    {
-      rootMargin: `${-offset}px 0px 0px 0px`,
-      threshold: [0, 1],
-    }
+    sectionsRef,
+    IntersectionObserverOptions
   )
 
+  // console.log(entries)
   /**
    * id가 화면의 반 이상 보이면 activeId 업데이트
    */
   useEffect(() => {
-    const intersectingEntry = entries.find((entry) => entry.isIntersecting)
-    if (intersectingEntry) {
-      setActiveId(intersectingEntry.target.id)
-    }
-  }, [entries])
+    const $target = entries[0]?.target as HTMLElement
+    const index = $target?.dataset?.index
 
-  useEffect(() => {
-    const intersectingEntry = entries.find((entry) => entry.isIntersecting)
-    if (intersectingEntry) {
-      setActiveId(intersectingEntry.target.id)
-    }
+    setActiveId(ids[+Number(index)])
   }, [entries])
 
   return (
@@ -110,7 +104,9 @@ export const ScrollSpy = ({
               ref={(ref) => {
                 sectionsRef.current[index] = ref
               }}
-              key={ids[index]}
+              data-index={index}
+              key={`scroll-spy-item-${ids[index]}`}
+              id={ids[index]}
             >
               {renderer(ids[index])}
             </div>
