@@ -1,87 +1,82 @@
-import {
-  ComponentType,
-  ForwardedRef,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { ComponentType, ReactNode, useEffect, useRef, useState } from 'react'
 
-import { ScrollBoxRef } from '../scrollBox'
-
+import { useDebounce } from '@/hooks/useDebounce'
 import useIntersectionObserver, { Elem } from '@/hooks/useIntersectionObserver'
+
+const DEBOUNCE_DELAY = 100
+
+/**
+ * NavigationRenderer props
+ * @param activeId 현재 활성화된 ID
+ * @param ids 모든 ID 배열
+ */
+type NavigationRenderer = (props: {
+  activeId: string | null
+  ids: string[]
+}) => ReactNode
+
+/**
+ * ContentRenderer props
+ * @param id 컨텐츠 ID
+ */
+type ContentRenderer = (props: { id: string }) => ReactNode
 
 const IntersectionObserverOptions = {
   threshold: [0.2],
 }
 
 interface ScrollSpyProps {
-  /**
-   * IDs of the sections to spy on
-   */
+  /** 컨텐츠에 들어갈 ID 배열 */
   ids: string[]
-  /**
-   * Offset from the top of the viewport when calculating intersection
-   */
-  offset?: number
-  /**
-   * Navigation component that receives the active section ID
-   */
-  navigation: (props: {
-    activeId: string | null
-    ids: string[]
-    ref: ForwardedRef<ScrollBoxRef>
-  }) => ReactNode
-  /**
-   * Content to be spied on
-   */
-  renderer: (id: string) => ReactNode
-  /**
-   * Wrapper component that receives the children
-   */
+  /** 네비게이션 컴포넌트 */
+  navigationRenderer: NavigationRenderer
+  /** 내부 컴포넌트 렌더 컴포넌트 */
+  contentRenderer: ContentRenderer
+  /** 래퍼 컴포넌트 */
   wrapperComponent: ComponentType<{
     children: ReactNode
   }>
-  /**
-   * Layout direction for navigation and content
-   * @default false
-   */
+  /** 레이아웃 방향 */
   isHorizontal?: boolean
 }
 
 export const ScrollSpy = ({
   ids,
-  navigation,
-  renderer,
+  navigationRenderer,
+  contentRenderer,
   wrapperComponent: WrapperComponent,
   isHorizontal = false,
 }: ScrollSpyProps) => {
   const [activeId, setActiveId] = useState<string | null>(null)
   const sectionsRef = useRef<Elem[]>([])
-  const scrollBoxRef = useRef<ScrollBoxRef>(null)
 
   const { entries } = useIntersectionObserver(
     sectionsRef,
     IntersectionObserverOptions
   )
 
-  // console.log(entries)
+  const debouncedSetActiveId = useDebounce(
+    (newId: string) => setActiveId(newId),
+    DEBOUNCE_DELAY
+  )
+
   /**
-   * id가 화면의 반 이상 보이면 activeId 업데이트
+   * 첫 번째 요소가 화면에 보이면 activeId 업데이트
    */
   useEffect(() => {
     const $target = entries[0]?.target as HTMLElement
     const index = $target?.dataset?.index
 
-    setActiveId(ids[+Number(index)])
-  }, [entries])
+    if (typeof index === 'string') {
+      debouncedSetActiveId(ids[+Number(index)])
+    }
+  }, [entries, debouncedSetActiveId, ids])
 
   return (
     <div
       style={{
         display: 'flex',
         flexDirection: isHorizontal ? 'row' : 'column',
-        gap: '20px',
       }}
     >
       <div
@@ -95,7 +90,7 @@ export const ScrollSpy = ({
           zIndex: 1,
         }}
       >
-        {navigation({ activeId, ids, ref: scrollBoxRef })}
+        {navigationRenderer({ activeId, ids })}
       </div>
       <WrapperComponent>
         {new Array(ids.length).fill(0).map((_, index) => {
@@ -108,7 +103,7 @@ export const ScrollSpy = ({
               key={`scroll-spy-item-${ids[index]}`}
               id={ids[index]}
             >
-              {renderer(ids[index])}
+              {contentRenderer({ id: ids[index] })}
             </div>
           )
         })}

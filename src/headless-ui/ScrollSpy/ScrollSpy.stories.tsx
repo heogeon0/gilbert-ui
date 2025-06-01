@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { ReactNode } from 'react'
+import { ReactNode, useRef } from 'react'
 
-import ScrollBox from '../scrollBox'
+import ScrollBox, { ScrollBoxRef } from '../scrollBox'
+import IDs from './data'
 
 import { ScrollSpy } from './index'
 
@@ -21,7 +22,7 @@ const Content = ({ id }: { id: string }) => (
     key={id}
     id={id}
     style={{
-      height: '500px',
+      height: '300px',
       padding: '20px',
       border: '1px solid #ccc',
       marginBottom: '20px',
@@ -35,39 +36,6 @@ const Content = ({ id }: { id: string }) => (
 const Wrapper = ({ children }: { children: ReactNode }) => (
   <div style={{ flex: 1 }}>{children}</div>
 )
-
-const IDs = [
-  'section1',
-  'section2',
-  'section3',
-  'section4',
-  'section5',
-  'section6',
-  'section7',
-  'section8',
-  'section9',
-  'section10',
-  'section11',
-  'section12',
-  'section13',
-  'section14',
-  'section15',
-  'section16',
-  'section17',
-  'section18',
-  'section19',
-  'section20',
-  'section21',
-  'section22',
-  'section23',
-  'section24',
-  'section25',
-  'section26',
-  'section27',
-  'section28',
-  'section29',
-  'section30',
-]
 
 const ScrollBoxItem = ({
   id,
@@ -93,26 +61,48 @@ const ScrollBoxItem = ({
   </div>
 )
 
+const Navigation = ({
+  ids,
+  activeId,
+}: {
+  ids: string[]
+  activeId: string | null
+}) => {
+  const scrollBoxRef = useRef<ScrollBoxRef>(null)
+
+  const handleItemClick = (id: string) => {
+    const scrollTop = document.scrollingElement!.scrollTop
+
+    const itemY = document.getElementById(id)?.getBoundingClientRect().top
+    const top = scrollTop + itemY!
+
+    scrollBoxRef.current?.scrollFocus(ids.indexOf(id), 'smooth')
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+
+  return (
+    <ScrollBox
+      ref={scrollBoxRef}
+      itemCount={ids.length}
+      currentIndex={ids.indexOf(activeId || '')}
+      renderer={(index) => (
+        <ScrollBoxItem
+          id={IDs[index]}
+          isActive={IDs[index] === activeId}
+          onClick={() => handleItemClick(IDs[index])}
+        />
+      )}
+      customButtonProps={{ useButton: true }}
+    />
+  )
+}
+
 export const Vertical: Story = {
   args: {
     ids: IDs,
-    offset: 50,
-    navigation: ({ ids, activeId, ref }) => (
-      <ScrollBox
-        ref={ref}
-        itemCount={ids.length}
-        renderer={(index) => (
-          <ScrollBoxItem
-            id={IDs[index]}
-            isActive={IDs[index] === activeId}
-            onClick={() => {}}
-          />
-        )}
-        customButtonProps={{ useButton: true }}
-      />
-    ),
+    navigationRenderer: Navigation,
     wrapperComponent: Wrapper,
-    renderer: (id) => <Content id={id} />,
+    contentRenderer: ({ id }) => <Content id={id} />,
     isHorizontal: false,
   },
 }
