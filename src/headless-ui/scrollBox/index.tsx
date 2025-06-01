@@ -13,8 +13,6 @@ import useIntersectionObserver, {
   Elem,
 } from '@/hooks/useIntersectionObserver.ts'
 
-type OnItemClick<T> = (item: T, scrollFocus: (index: number) => void) => void
-
 type CustomButtonProps = {
   useButton: boolean
   leftCustomButton?: React.ReactNode
@@ -25,12 +23,12 @@ type Direction = 'prev' | 'next'
 export type ScrollBoxRef = {
   scrollFocus: (index: number, behavior: ScrollBehavior) => void
 }
-export type ScrollBoxProps<T> = {
+export type ScrollBoxProps = {
   itemCount: number
-  onItemClick?: OnItemClick<T>
   customButtonProps: CustomButtonProps
   wrapperClassName?: string
-  renderer: (index: number, onClick: OnItemClick<T>) => React.ReactNode
+  currentIndex?: number
+  renderer: (index: number) => React.ReactNode
 }
 
 const DefaultButtonState = {
@@ -63,16 +61,16 @@ const getVisibileEdgeItems = (
   return { left, right }
 }
 
-const ScrollBoxComponent = <T extends { id: string }>(
-  props: ScrollBoxProps<T>,
+const ScrollBoxComponent = (
+  props: ScrollBoxProps,
   ref: ForwardedRef<unknown>
 ) => {
   const {
     wrapperClassName = '',
     renderer,
     itemCount,
-    onItemClick,
     customButtonProps,
+    currentIndex,
   } = props
   const [buttonEnabled, setButtonEnabled] = useState(DefaultButtonState)
   const watcherRef = useRef<[Elem, Elem]>([null, null])
@@ -91,8 +89,7 @@ const ScrollBoxComponent = <T extends { id: string }>(
     (index: number, behavior: ScrollBehavior = 'instant') => {
       itemsRef.current[index]?.scrollIntoView({
         behavior,
-        block: 'nearest',
-        inline: 'start',
+        inline: 'center',
       })
     },
     []
@@ -125,8 +122,11 @@ const ScrollBoxComponent = <T extends { id: string }>(
     []
   )
 
-  /** 버튼 사용여부 */
-  const isUseButton = customButtonProps.useButton
+  useEffect(() => {
+    if (currentIndex) {
+      scrollFocus(currentIndex)
+    }
+  }, [currentIndex])
 
   /**
    * 현재 보여지는 아이템에 따라 버튼 활성화 여부 결정
@@ -149,6 +149,8 @@ const ScrollBoxComponent = <T extends { id: string }>(
     })
   }, [watcherEntries])
 
+  /** 버튼 사용여부 */
+  const isUseButton = customButtonProps.useButton
   return (
     <div className={cx('scrollBox')}>
       <ul ref={listRef} className={cx('scrollBoxList', wrapperClassName)}>
@@ -167,7 +169,7 @@ const ScrollBoxComponent = <T extends { id: string }>(
               }}
               key={`scroll-box-item-${index}`}
             >
-              {renderer(index, onItemClick || (() => {}))}
+              {renderer(index)}
             </li>
           )
         })}
@@ -208,6 +210,6 @@ const ScrollBoxComponent = <T extends { id: string }>(
   )
 }
 
-export default forwardRef(ScrollBoxComponent) as <T extends { id: string }>(
-  props: ScrollBoxProps<T> & { ref?: ForwardedRef<ScrollBoxRef> }
+export default forwardRef(ScrollBoxComponent) as (
+  props: ScrollBoxProps & { ref?: ForwardedRef<ScrollBoxRef> }
 ) => React.ReactElement
