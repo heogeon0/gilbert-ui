@@ -68,6 +68,8 @@ const Navigation = ({
   ids: string[]
   activeId: string | null
 }) => {
+  const temp = '임시커밋용'
+  console.log(temp)
   const scrollBoxRef = useRef<ScrollBoxRef>(null)
 
   const handleItemClick = (id: string) => {
