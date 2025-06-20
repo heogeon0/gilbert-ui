@@ -1,6 +1,10 @@
 // styles/preflight.css.ts
 import { globalStyle } from '@vanilla-extract/css'
 
+globalStyle('.no-scroll', {
+  overflow: 'hidden',
+})
+
 // Box sizing
 globalStyle('*, *::before, *::after', {
   boxSizing: 'border-box',

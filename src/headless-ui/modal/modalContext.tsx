@@ -1,4 +1,6 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
+
+
 
 type ModalState = Map<string, ReactNode>
 type ModalDispatchState = Dispatch<SetStateAction<ModalState>>
@@ -10,6 +12,9 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modalState, setModalState] = useState<ModalState>(new Map())
   const modalValues = Array.from(modalState.values())
 
+  useEffect(() => {
+    document.body.classList.toggle('no-scroll', modalState.size > 0)
+  }, [modalState])
 
   return (
     <ModalContext.Provider value={modalState}>
