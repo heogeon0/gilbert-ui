@@ -24,7 +24,7 @@ const position = {
 const Tooltip = ({ children, tooltip, id, openByHover }: Props) => {
   const observeRef = useRef(null)
   const wrapperRef = useRef(null)
-  const style = useStyleInView(wrapperRef, observeRef, id, position)
+  const style = useStyleInView(wrapperRef, observeRef, position)
   const [isOpen, toggle] = useSingleOpen(id)
 
   /** 특정 요소를 클릭했을 때 툴팁을 열거나 닫는 함수 */

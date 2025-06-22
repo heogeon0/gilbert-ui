@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { ModalProvider, useSetModal } from '@/headless-ui/modal/modalContext'
+import { ModalProvider, useSetModal } from '@/headless-ui/modal/modalProvider'
 
 const ModalDemo = () => {
   const { openModal, closeModal } = useSetModal()

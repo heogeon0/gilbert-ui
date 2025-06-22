@@ -23,10 +23,10 @@ const isSameRect = (prev: Rect, next: Rect) => {
   return rectKeys.every((k) => prev?.[k] === next?.[k])
 }
 
-const getViewportRect = () => {
+const getViewportRect = (targetElement?: HTMLElement) => {
   let stored: Rect = DefaultRect
   return () => {
-    const elem = typeof document !== 'undefined' && document.scrollingElement
+    const elem = typeof document !== 'undefined' && (targetElement || document.scrollingElement)
     if (!elem) return stored
     const { left, top, width, height } = elem.getBoundingClientRect()
     const newRect = {
@@ -42,10 +42,10 @@ const getViewportRect = () => {
   }
 }
 
-const subscribe = (callback: () => void) => {
+const subscribe = (callback: () => void, targetElement?: HTMLElement) => {
   const resizeObserver = new ResizeObserver(callback)
   window.addEventListener('scroll', callback)
-  resizeObserver.observe(document.body)
+  resizeObserver.observe(targetElement || document.body)
 
   return () => {
     window.removeEventListener('scroll', callback)
@@ -57,10 +57,12 @@ const ViewportContext = createContext<Rect>(DefaultRect)
 
 export const ViewportContextProvider = ({
   children,
+  targetElement,
 }: {
   children: React.ReactNode
+  targetElement?:  HTMLElement
 }) => {
-  const viewportRect = useSyncExternalStore(subscribe, getViewportRect())
+  const viewportRect = useSyncExternalStore(subscribe, getViewportRect(targetElement))
 
   return (
     <ViewportContext.Provider value={viewportRect}>
