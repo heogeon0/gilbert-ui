@@ -47,7 +47,10 @@ const useStyleInView = (
       const absoluteTop = -viewportRect.top + targetRect.top
 
 
-      console.log(absoluteTop)
+
+      console.log(absoluteTop, viewportRect.top,targetRect.top, viewportRect.height)
+
+      console.log('절대위치', absoluteTop)
 
       setStyle({
         [verticalKey]:
